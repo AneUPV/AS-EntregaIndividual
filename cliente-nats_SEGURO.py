@@ -4,8 +4,6 @@
 
 import asyncio
 import nats
-import socket
-
 
 # Asyncio es una biblioteca de Python para escribir codigo concurrente
 # utilizando la sintaxis async/await. Asyncio es utilizado como base en
@@ -20,11 +18,6 @@ async def main():
 
     # Variable boolean para controlar si un evento ha ocurrido 
     is_done = asyncio.Future()
-    hostname = socket.gethostname()
-    ip=socket.gethostbyname(hostname)
-
-    ip="172.16.238.20"
-
 
     # Metodo de cierre de conexión
     async def closed_cb():
@@ -32,8 +25,7 @@ async def main():
         is_done.set_result(True)
 
     # Establecer conexión con localhost:4222
-    async with (await nats.connect(ip+':4222', closed_cb=closed_cb)) as nc:
-
+    async with (await nats.connect('localhost:4222', closed_cb=closed_cb)) as nc:
         print(f'Conectado al server NATS -> {nc.connected_url.netloc}...')
 
 
@@ -51,13 +43,13 @@ async def main():
         await nc.flush()
 
         # Envía 10 mensajes al tópico 'topico-pruebas'
-        for i in range(0, 100):
+        for i in range(0, 12):
 
             numero = str(i)
             if i == 0:
-                await nc.publish('topico-pruebas',b'A continuacion se enviaran 100: mensajes: ')
+                await nc.publish('topico-pruebas',b'A continuacion se enviaran 10 mensajes: ')
             else:
-                if i == 99:
+                if i == 11:
                     await nc.publish('topico-pruebas',b'Este mensaje es de despedida, Agur!!!')
                 else:
                     await nc.publish('topico-pruebas',b'Este es el mensaje numero '+ numero.encode('utf-8'))

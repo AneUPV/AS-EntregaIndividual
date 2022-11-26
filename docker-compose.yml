@@ -1,30 +1,46 @@
-
 services:
   # Contenedor que alojará el servidor NATS - La propia imagen de 
   # DockerHub tiene un servidor NATS  
   servidor-nats:
-    restart: on-failure
+    # Dar nombre al contenedor
+    container_name: servidor-nats
+    # Imagen para ejecutar el contenedor
     image: nats
+    # Política de reinicio: Reiniciar contenedor en caso de error
+    restart: on-failure
+    # Mapeo de puertos
     ports:
-      - "4222:4222"
-      - "6222:6222"
-      - "8222:8222"
-  # Volumen para recoger ip del server-NATS
-    volumes:
-      - volumenNATS:/data
+     - "4222:4222"
+     - "6222:6222"
+     - "8222:8222"
+    networks:
+      NATS:
+        ipv4_address: 172.16.238.20
 
+networks:
+  NATS:
+    ipam:
+      config:
+        - subnet: 172.16.238.0/24
+
+      
   # Contenedor que alojará el cliente Python de NATS - Este
   # se suscribirá y enviará mensajes a un tópico
   cliente-nats:
+    container_name: cliente-nats
     restart: on-failure
     build: 
-        context: .
-        dockerfile: Dockerfile
-    depends_on:
-      - servidor-nats
-    volumes:
-      - volumenNATS:/data
-        
+      context: .
+      dockerfile: Dockerfile
 
-volumes:
-        volumenNATS:
+    # Crear el contenedor en la red 'redNATS'
+    networks:
+      redNATS:
+        ipv4_address: 172.16.238.21
+    depends_on:
+      - servidor-nats  
+networks:
+  NATS:
+    ipam:
+      config:
+        - subnet: 172.16.238.0/24
