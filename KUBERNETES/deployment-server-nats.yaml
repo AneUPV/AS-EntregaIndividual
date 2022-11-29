@@ -1,0 +1,38 @@
+###################################################################
+#            DEPLOYMENT PARA SERVER NATS - KUBERNETES             #
+###################################################################
+
+# Version
+apiVersion: apps/v1
+# Especificar tipo de objeto Kubernetes, en este caso, 'Deployment'
+kind: Deployment
+
+metadata:
+  # Nombre del objeto Deployment
+  name: deployment-server-nats
+# Especificaciones
+spec:
+  # Numero de Pods idénticos
+  replicas: 1
+  selector:
+    matchLabels:
+      # Especificar label identificador
+      modulo: server
+  # Plantilla con la que se crearán los Pods 
+  template:
+    metadata:
+      labels:
+       # Label identificador, tiene que coincidir con el de arriba
+       modulo: server
+    spec:
+      # Especificaciones del contenedor a crear
+      containers:
+      # Nombre del contenedor
+      - name: pod-server-nats
+        # Imagen 
+        image: nats
+        # Mapeo de puertos->Se expondrán los siguientes puertos
+        ports:
+        - containerPort: 4222
+        - containerPort: 6222
+        - containerPort: 8222

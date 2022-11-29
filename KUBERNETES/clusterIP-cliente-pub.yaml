@@ -1,0 +1,26 @@
+###################################################################
+#      CLUSTER IP PARA CLIENTE NATS PUBLISHER - KUBERNETES       #
+###################################################################
+
+# Version
+apiVersion: v1
+# Especificar tipo de objeto Kubernetes, en este caso, 'Service'
+kind: Service
+
+metadata:
+  # Nombre del clusterIP
+  name: 172.16.238.22
+spec:
+  # Especificar el tipo de servicio --> ClusterIP
+  type: ClusterIP
+  # En la sección selector, se establecen las etiquetas de los
+  # objetos a los que redirigir el tráfico.
+  selector:
+    # Tiene que COINCIDIR con label del deployment del cliente
+    modulo: cliente-pub
+  # Puertos
+  ports:
+  # Puerto para que otros Pods se conecten a los objetos selector
+  - port: 4222
+    # Puerto de los objetos selector a los que redirigir el tráfico
+    targetPort: 4222

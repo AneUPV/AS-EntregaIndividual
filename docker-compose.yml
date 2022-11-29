@@ -24,7 +24,33 @@ services:
         #- subnet: 172.16.238.0/24
 
 ###################################################################
-
+################################################################ 
+ 
+  # Contenedor que alojará el cliente Python de NATS - Este 
+  # se suscribirá y ENVIARÁ mensajes a un tópico [PUBLISHER] 
+  pub-cliente-nats: 
+    container_name: pub-cliente-nats 
+    restart: on-failure 
+    build: 
+      context: ./DOCKERFILE_pub/ 
+      dockerfile: Dockerfile 
+    depends_on: 
+      - servidor-nats 
+    # Mapeo de puertos 
+    #ports: 
+    #- "4222:4222" 
+    #- "6222:6222" 
+    #- "8222:8222" 
+    # Crear el contenedor en la red 'redNATS' 
+    networks: 
+      NATS: 
+        ipv4_address: 172.16.238.22 
+        #networks: 
+        #NATS: 
+        #ipam: 
+        #config: 
+        #- subnet: 172.16.238.0/24
+###########################################################################
   # Contenedor que alojará el cliente Python de NATS - Este
   # se suscribirá y LEERÁ mensajes a un tópico [SUBSCRIBER]
   sub-cliente-nats:
@@ -33,8 +59,8 @@ services:
     build:
       context: ./DOCKERFILE_sub/
       dockerfile: Dockerfile
-      #depends_on:
-      #- servidor-nats
+    depends_on:
+      - servidor-nats
     # Mapeo de puertos
     #ports:
     #- "4222:4222"
@@ -44,34 +70,6 @@ services:
     networks:
       NATS:
         ipv4_address: 172.16.238.21
-
-
-################################################################
-
-  # Contenedor que alojará el cliente Python de NATS - Este
-  # se suscribirá y ENVIARÁ mensajes a un tópico [PUBLISHER]
-  pub-cliente-nats:
-    container_name: pub-cliente-nats
-    restart: on-failure
-    build:
-      context: ./DOCKERFILE_pub/
-      dockerfile: Dockerfile
-      #depends_on:
-      #- servidor-nats
-    # Mapeo de puertos
-    #ports:
-    #- "4222:4222"
-    #- "6222:6222"
-    #- "8222:8222"
-    # Crear el contenedor en la red 'redNATS'
-    networks:
-      NATS:
-        ipv4_address: 172.16.238.22
-        #networks:
-        #NATS:
-        #ipam:
-        #config:
-        #- subnet: 172.16.238.0/24
 networks: 
   NATS: 
     ipam: 

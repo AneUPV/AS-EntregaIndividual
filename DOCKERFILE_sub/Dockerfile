@@ -1,8 +1,8 @@
 ##################################################################
-#		DOCKERFILE para crear el cliente NATS		 #
+#	DOCKERFILE para crear el cliente NATS SUBSCRIBER	 #
 ##################################################################
 
-# Imagen base
+# Imagen que toma de base -> Ubuntu
 FROM ubuntu
 
 # Descargar e instalar dependencias para ejecutar el cliente
@@ -13,10 +13,9 @@ RUN apt -qq update && apt -qq -y install python3-pip
 RUN pip install nats-python
 RUN pip install nats-py
 
-# Establecer directorio 'code' como directorio de trabajo
 # Crear la carpeta 'code'
 RUN mkdir /code
-# Establecer como directorio de trabajo
+# Establecer directorio 'code' como directorio de trabajo
 WORKDIR /code
 
 # Copiar el cliente python SUBSCRIBER de NATS dentro del directorio 
