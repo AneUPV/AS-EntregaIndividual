@@ -4,6 +4,7 @@
 
 # Importar las librerías y dependencias para el programa
 import asyncio
+import time
 # nats tiene una librería para implementar clientes en el lenguaje Python
 import nats
 # libreria para generar números random
@@ -22,19 +23,23 @@ import random
 # Programa principal
 async def main():
 
+    time.sleep(8)
     # Variable boolean para controlar si un evento ha ocurrido
     is_done = asyncio.Future()
-    # IP estática que corresponde al servidor nats
-    ip="172.16.238.20"
-
-
+   
+    # Ruta para el LOG
+    path = "/logNats/log-nats.txt" 
+    # Variable para la fecha y hora
+    ahora = time.strftime("%c")
+    
+    nc = nats.connect('servidor-nats:4222')
     # Metodo de cierre de conexión
     async def closed_cb():
         print('Conexión a NATS server se ha cerrado con éxito!!')
         is_done.set_result(True)
 
     # Establecer conexión con localhost:4222
-    async with (await nats.connect(ip+':4222', closed_cb=closed_cb)) as nc:
+    async with (await nats.connect('servidor-nats:4222', closed_cb=closed_cb)) as nc:
 
         # Prints informativos
         print (f'-> Conectado al server NATS :: IP -> {nc.connected_url.netloc}...')
@@ -55,6 +60,10 @@ async def main():
         print ('     [ESTADO]         [TÓPICO]            [MENSAJE]')
         print ('--------------------------------------------------------------')
 
+        with open(path, 'a') as f:
+            f.write("\n==========================================\n")
+            f.write("****     [ %s ]  ****\n"  % ahora)
+            f.write("--------------------------------------------\n")
 
     # En este método se muestran por output los mensajes que se reciben.
     # Será el método gestor de mensajes
@@ -62,6 +71,8 @@ async def main():
             subject = msg.subject
             reply = msg.reply
             data = msg.data.decode()
+            with open(path, 'a') as f:
+                f.write("Mensaje ENVIADO ["+subject+"] :"+data+"\n")
 
             print('Mensaje ENVIADO [{subject}] : {data}'.format(subject=subject, reply=reply, data=data))
 
@@ -71,13 +82,13 @@ async def main():
 
         # Envía 30 mensajes al tópico 'admin-sistemas'. Los mensajes serán  
         # números aleatorios
-        for i in range(0, 30):
+        for i in range(0, 100):
                         
             if i == 0:
                 # Se publica un mensaje, indicando tópico y contenido
                 await nc.publish('admin-sistemas',b'A continuacion se enviaran NUMEROS ALEATORIOS ')
             else:
-                if i == 29:
+                if i == 99:
                     # Se publica un mensaje, indicando tópico y contenido
                     await nc.publish('admin-sistemas',b'Este mensaje es de despedida, Agur!!!')
                 else:
@@ -93,8 +104,7 @@ async def main():
         print("#   A espera del cliente SUBSCRIBER...    #")
         print("###########################################")
 
-
-    await asyncio.wait_for(is_done, 60.0)
+    await asyncio.wait_for(is_done, 10.0)
 
 if __name__ == '__main__':
     # Se ejecuta el programa principal
