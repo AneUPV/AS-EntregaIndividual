@@ -1,0 +1,36 @@
+###################################################################
+#	RECLAMACION DE VOLUMEN PERSISTENTE (PVC) -KUBERNETES      #
+###################################################################
+
+# Version
+apiVersion: v1
+
+# Tipo de objeto Kubernetes --> Reclamación de volumen Persistente
+# Este objeto solicita la creación de un VP al cluster.
+kind: PersistentVolumeClaim
+
+# Sección METADATA
+#------------------
+metadata:
+  labels:
+    modulo: volumen-nats
+  # Especificar nombre del volumen
+  name: volumen-nats
+  
+# Sección SPEC
+#------------------
+spec:
+  # 
+  accessModes:
+    # Se le asignará el modo de acceso 'ReadWriteMany',
+    # ya que necesita que múltiples nodos pueden leer y
+    # escribir de él:
+    #  -PUBLISHER: Escribe en logNats/log-nats.txt
+    #  -SUBSCRIBER: Lee logNats/log-nats.txt
+    - ReadWriteMany
+  # Configuración de la solicitud del volumen
+  resources:
+    requests:
+      # Capacidad de 100Mi
+      storage: 100Mi
+

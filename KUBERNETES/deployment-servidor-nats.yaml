@@ -1,0 +1,51 @@
+###################################################################
+#            DEPLOYMENT PARA SERVER NATS - KUBERNETES             #
+###################################################################
+
+# Version
+apiVersion: apps/v1
+# Especificar tipo de objeto Kubernetes --> Deployment
+# Este crea un conjunto de Pods y monitoriza su estado
+kind: Deployment
+
+# Sección metadata
+#------------------
+metadata:
+  # Nombre del objeto Deployment
+  name: servidor-nats
+  
+# Sección spec
+#------------------
+spec:
+    # Numero de Pods idénticos que se generarán con el deployment
+  replicas: 1
+  selector:
+    matchLabels:
+      # Especificar label identificador
+      modulo: servidor-nats
+
+  # Plantilla con la que se crearán los Pods 
+  template:
+    metadata:    
+      # Label identificador, tiene que coincidir con el de arriba
+      labels:
+        modulo: servidor-nats
+    
+    # Especificaciones del contenedor a crear
+    spec:
+      containers:
+        # Imagen
+        - image: nats
+        # Nombre del contenedor
+          name: servidor-nats
+        # Mapeo de puertos->Se expondrá el puerto 4222 para comunicarse
+        # con los clientes
+          ports:
+            - containerPort: 4222
+
+        
+      # Politica de reinicio: Always
+      # Reiniciar siempre. Si se ha parado manualmente, se 
+      # reinicia cuando se reinicie el servicio Docker
+      restartPolicy: Always
+

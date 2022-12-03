@@ -1,0 +1,69 @@
+###################################################################
+#      DEPLOYMENT PARA CLIENTE NATS PUBLISHER - KUBERNETES       #
+###################################################################
+
+# Version
+apiVersion: apps/v1
+# Especificar tipo de objeto Kubernetes --> Deployment
+# Este crea un conjunto de Pods y monitoriza su estado
+kind: Deployment
+
+# Sección METADATA
+#------------------
+metadata:
+  labels:
+    modulo: pub-cliente-nats
+  # Nombre del objeto Deployment
+  name: pub-cliente-nats
+  
+# Sección SPEC
+#------------------
+spec:
+  # Numero de Pods idénticos que se generarán con el deployment
+  replicas: 1
+  selector:
+    matchLabels:
+      # Especificar label identificador
+      modulo: pub-cliente-nats
+  
+  # Plantilla con la que se crearán los Pods
+  template:
+    metadata:
+      # Label identificador, tiene que coincidir con el de arriba
+      labels:
+        modulo: pub-cliente-nats
+        
+    # Especificaciones del contenedor a crear
+    spec:
+      containers:
+        # Imagen correspondiente a PUBLISHER en Docker Hub
+        - image: alopezmena/cliente-nats-pub
+        # Nombre del contenedor
+          name: pub-cliente-nats
+        # Mapeo de puertos->Se expondrá el puerto 4222
+          ports:
+            - containerPort: 4222
+          
+          # En esta parte se concreta la configuración del PV
+          volumeMounts:
+              # Punto de montaje en el contenedor
+            - mountPath: /logNats
+              # Nombre del Volumen [*]
+              name: volumen-nats
+              
+      # Politica de reinicio: Always
+      # Reiniciar siempre. Si se ha parado manualmente, se 
+      # reinicia cuando se reinicie el servicio Docker
+      restartPolicy: Always
+      
+      # Sección para volúmenes
+      volumes:
+        # Nombre del volumen  [*]
+        - name: volumen-nats
+          # Asignar la reclamación de volumen persistente
+          persistentVolumeClaim:
+            claimName: volumen-nats
+
+# [*] Ambos campos deben coincidir. Debe coincidir además con el
+# nombre asignado en el fichero de configuración de la reclamación.
+

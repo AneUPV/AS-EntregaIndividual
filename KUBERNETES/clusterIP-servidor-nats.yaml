@@ -1,0 +1,34 @@
+###################################################################
+#             CLUSTER IP PARA SERVER NATS - KUBERNETES            #
+###################################################################
+
+# Version
+apiVersion: v1
+# Especificar tipo de objeto Kubernetes, en este caso, 'Service'
+kind: Service
+
+# Sección METADATA
+#------------------
+metadata:
+  # Nombre del clusterIP
+  name: servidor-nats
+
+# Sección SPEC
+#------------------
+spec:
+  # Especificar el tipo de servicio --> ClusterIP
+  type: ClusterIP
+  
+  # En la sección selector, se establecen las etiquetas de los
+  # objetos a los que redirigir el tráfico.
+  selector:
+  
+    # Tiene que COINCIDIR con label del deployment del server
+    modulo: servidor-nats
+    
+  # Puertos
+  ports:
+  # Puerto para que otros Pods se conecten a los objetos selector
+  - port: 4222
+    # Puerto de los objetos selector a los que redirigir el tráfico
+    targetPort: 4222
