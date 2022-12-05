@@ -3,6 +3,7 @@
 ############################################################
 
 # Importar las librerías y dependencias para el programa
+# Importar librería Asyncio
 import asyncio
 # Nats tiene una librería para implementar clientes en el lenguaje Python
 import nats
@@ -43,6 +44,7 @@ async def main():
             subject = msg.subject
             reply = msg.reply
             data = msg.data.decode()
+            # Enseñar por pantalla el mensaje recibido
             print('>> NUEVO mensaje en [{subject}] {reply}: {data}'.format(subject=subject, reply=reply, data=data))
 	
 	# Prints informativos
@@ -67,7 +69,6 @@ async def main():
         print ('--------------------------------------------------------------')
         
         # En este punto el cliente se suscribe al tópico 'admin-sistemas'
-        # y se muestran por output los mensajes que recibe.
 
         # Suscribirse
         await nc.subscribe('admin-sistemas', cb=subscribe_handler)

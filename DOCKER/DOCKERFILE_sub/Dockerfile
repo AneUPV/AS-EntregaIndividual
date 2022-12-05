@@ -22,13 +22,9 @@ WORKDIR /code
 # de trabajo del contenedor
 COPY cliente-nats-sub.py .
 
-# Exponer los puertos necesarios para comunicarse con el 
-# contenedor que aloja el server NATS
-EXPOSE 4222
-
-# Establecer como comando de arranque la ejecución del cliente 
+# Establecer como comando de arranque la ejecución del cliente. 
 # Utilizando las instrucciones CMD y ENTRYPOINT , le indicamos al 
-# contenedor que ejecute el script test.py Python cuando se
+# contenedor que ejecute el cliente-nats-sub.py de Python cuando se
 # inicie el contenedor.
 CMD ["cliente-nats-sub.py"]
 ENTRYPOINT ["python3"]

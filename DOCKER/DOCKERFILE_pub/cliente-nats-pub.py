@@ -3,6 +3,7 @@
 ##########################################################
 
 # Importar las librerías y dependencias para el programa
+# Librería Asyncio
 import asyncio
 # Librería necesaria para escribir la fecha en el log o registro de mensajes
 import time
@@ -50,7 +51,7 @@ async def main():
         print ('')
         print (' DESCRIPCIóN: Este cliente se suscribirá al tópico "admin-sistemas"')
         print (' y publicará mensajes. El otro cliente python, el SUBSCRIBER       ')
-        print (' [cliente-nats-pub.py] deberá recibir los mensajes enviados por el ')
+        print (' [cliente-nats-sub.py] deberá recibir los mensajes enviados por el ')
         print (' PUBLISHER')
 
         print ('#####################################################################')
@@ -67,15 +68,16 @@ async def main():
             f.write("****     [ %s ]  ****\n"  % ahora)
             f.write("--------------------------------------------\n")
 
-    # En este método se muestran por output los mensajes que se reciben.
+    # En este método se muestran por output los mensajes que se envían.
     # Será el método gestor de mensajes, que se ejecuta cada vez que se envía algo
         async def subscribe_handler(msg):
             subject = msg.subject
             reply = msg.reply
             data = msg.data.decode()
+            # Guardar mensaje en log
             with open(path, 'a') as f:
                 f.write("Mensaje ENVIADO ["+subject+"] :"+data+"\n")
-
+            # Mostrar mensaje por pantalla
             print('Mensaje ENVIADO [{subject}] : {data}'.format(subject=subject, data=data))
 
         # Suscribirse al tópico ‘admin-sistemas’
@@ -91,7 +93,7 @@ async def main():
                 await nc.publish('admin-sistemas',b'A continuacion se enviaran NUMEROS ALEATORIOS ')
             else:
                 if i == 99:
-                    # Se publica un mensaje, indicando tópico y contenido
+                    # Se publica el último mensaje, indicando tópico y contenido
                     await nc.publish('admin-sistemas',b'Este mensaje es de despedida, Agur!!!')
                 else:
                     # Se consigue el número aleatorio y se publica el mensaje

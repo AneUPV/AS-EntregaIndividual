@@ -16,12 +16,12 @@ services:
     # Imagen para ejecutar el contenedor
     image: nats
     # Política de reinicio: Reiniciar contenedor en caso de error
+    # Se interpreta error cuando el código de finalización del
+    # proceso es superior a 0.
     restart: on-failure
     # Mapeo de puertos
     ports:
      - "4222:4222"
-     #- "6222:6222"
-     #- "8222:8222"
 
 
 ################################################################ 

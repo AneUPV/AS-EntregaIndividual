@@ -40,8 +40,8 @@ spec:
           # Nombre del contenedor
           name: sub-cliente-nats
           # Mapeo de puertos->Se expondrá el puerto 4222
-          ports:
-            - containerPort: 4222
+          #ports:
+          #  - containerPort: 4222
           
           # En esta parte se concreta la configuración del PV
           volumeMounts:

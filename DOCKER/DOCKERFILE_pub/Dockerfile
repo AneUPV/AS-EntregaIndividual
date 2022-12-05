@@ -5,7 +5,7 @@
 # Imagen tomada como base -> Ubuntu
 FROM ubuntu
 
-# Descargar e instalar dependencias para ejecutar el cliente y
+# Descargar e instalar dependencias para ejecutar el cliente
 # Actualizar y conseguir instalador de paquetes pip para python
 RUN apt -qq update && apt -qq -y install python3-pip
 
@@ -23,15 +23,10 @@ WORKDIR /code
 # de trabajo del contenedor
 COPY cliente-nats-pub.py .
 
-# Exponer los puertos necesarios para comunicarse con el 
-# contenedor que aloja el server NATS
-EXPOSE 4222
-#EXPOSE 6222
-#EXPOSE 8222
 
 # Establecer como comando de arranque la ejecución del cliente 
 # Utilizando las instrucciones CMD y ENTRYPOINT , le indicamos al 
-# contenedor que ejecute el script test.py Python cuando se
+# contenedor que ejecute cliente-nats-pub.py de Python cuando se
 # inicie el contenedor.
 CMD ["cliente-nats-pub.py"]
 ENTRYPOINT ["python3"]
