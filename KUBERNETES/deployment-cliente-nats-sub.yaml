@@ -38,10 +38,7 @@ spec:
         # Imagen correspondiente a SUBSCRIBER en Docker Hub
         - image: alopezmena/cliente-nats-sub
           # Nombre del contenedor
-          name: sub-cliente-nats
-          # Mapeo de puertos->Se expondrá el puerto 4222
-          #ports:
-          #  - containerPort: 4222
+          name: sub-cliente-nats   
           
           # En esta parte se concreta la configuración del PV
           volumeMounts:
